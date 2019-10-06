@@ -1,7 +1,5 @@
 package br.nom.penha.bruno.homework.processors;
 
-import java.math.BigDecimal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,33 +12,35 @@ public class DataItemProcessor implements ItemProcessor<Data, Data> {
 	private static final Logger LOG = LoggerFactory.getLogger(DataItemProcessor.class);
 	
 	@Override
-	public Data process(Data transacaoParam) throws Exception {
+	public Data process(Data dataParam) throws Exception {
  
+		Data dataValidated = null;
 		try {
 	
-			validarPagamentosFinanceiro(transacaoParam);
+			dataValidated = validateTimestamp(dataParam);
 						
 		} catch (Exception e) {			
-			LOG.error("Ocorreu um erro no Processamento: " + e.getMessage(), e);
+			LOG.error("We have an process problem...: " + e.getMessage(), e);
 		}
 		
-		return transacaoParam;
+		return dataValidated;
 	}
 	
 	/**
-	 * Apenas o departamento Financeiro pode emitir pagamentos para terceiros.
-	 * @param transacaoParam com a transação a ser tratada
+	 * If several inputs provide data with the same timestamp - amounts should be merged.
+	 * @param dataParam with data to be validated
 	 */
-	private void validarPagamentosFinanceiro(Data transacaoParam) {
+	private Data validateTimestamp(Data dataParam) {
 		
-		/*if(transacaoParam.getTipo().equals(TipoTransacaoEnum.PAGAMENTO.getDescricao())
-				&& !transacaoParam.getRemetente().equals(RemetenteEnum.FINANCEIRO.getDescricao())){
-			
-			transacaoParam.setIrregularidade(IrregularidadeEnum.REGRA_1.getDescricao());
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(String.format(FORMATO, MSG_ERRO, transacaoParam.getId(), PAGAMENTO_INDEVIDO));
-			}
-		}*/
+		/*
+		 * Here I should check if this timestamp exist to add to this amount. 
+		 */
+		
+		/*
+		 * If not, include new record into database
+		 */
+		
+		return dataParam;
 	}
 
 
