@@ -1,10 +1,12 @@
 package br.nom.penha.bruno.homework.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import br.nom.penha.bruno.homework.entity.Data;
 import br.nom.penha.bruno.homework.entity.DataReturn;
@@ -26,19 +28,24 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	private void initDB() {
 		dataReturn = new HashMap<Long, DataReturn>();
-		DataReturn data1 = new DataReturn(new Data(123456789l, new Double(1234.567890)));
-        dataReturn.put(data1.getDataReturn().getTimestamp(),data1);
+//		DataReturn data1 = new DataReturn(new Data(123456789l, new Double(1234.567890)));
+//        dataReturn.put(data1.getDataReturn().getTimestamp(),data1);
 	}
 
 	@Override
-	public Observable<DataReturn> create(Data dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(), new Double(dto.getAmount())));
-		if(dataReturn.containsKey(dto.getTimestamp())) {
-			final DataReturn toAdd = dataReturn.get(dto.getTimestamp());
-			DataReturn added = new DataReturn(new Data(dto.getTimestamp(), new Double(toAdd.getDataReturn().getAmount()) + new Double(dto.getAmount())));
-			dataReturn.put(dto.getTimestamp(), added);
+	public Observable<DataReturn> create(DataReturn dto) {
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getDataReturn().getTimestamp(), new Double(dto.getDataReturn().getAmount())));
+		if(dataReturn.containsKey(dto.getDataReturn().getTimestamp())) {
+			final DataReturn toAdd = dataReturn.get(dto.getDataReturn().getTimestamp());
+			
+			BigDecimal total = toAdd.getDataReturn().getAmountBigDecimal().add(dto.getDataReturn().getAmountBigDecimal());
+			
+			DataReturn added = new DataReturn(new Data(dto.getDataReturn().getTimestamp(), total.doubleValue()));
+			dataReturn.put(dto.getDataReturn().getTimestamp(), added);
+		}else {
+			dataReturn.put(dataToBeReturned.getDataReturn().getTimestamp(), dataToBeReturned);	
 		}
-		dataReturn.put(dataToBeReturned.getDataReturn().getTimestamp(), dataToBeReturned);
+		
         return  Observable.fromCallable(() -> dataToBeReturned);
 	}
 
@@ -51,5 +58,10 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	public Observable<List<DataReturn>> readAll() {
 		return Observable.fromCallable(() -> new ArrayList<>(dataReturn.values()));
 	}
+	
+	@Override
+	public List<DataReturn> readAll(String test) {
+        return dataReturn.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
+    }
 
 }

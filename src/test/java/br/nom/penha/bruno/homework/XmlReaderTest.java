@@ -53,8 +53,7 @@ public class XmlReaderTest {
         assertEquals(dto.getAmount(),expected.getAmount());
         assertEquals(dto.getTimestamp(),expected.getTimestamp());
     }
-    
-
+   
 
 }
 

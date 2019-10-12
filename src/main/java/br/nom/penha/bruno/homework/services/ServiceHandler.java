@@ -42,13 +42,13 @@ public class ServiceHandler {
     }
     
     public final synchronized ServiceHandler setService(final String path, final ServletAction action){
-        final Service endpoint = new Service(path, action);
-        serviceList.add(endpoint);
+        final Service service = new Service(path, action);
+        serviceList.add(service);
         log.info(LocalTime.now() + ": added servlet to path " + path);
         return this;
     }
 
-	public void toJsonResponse(HttpServletRequest req, HttpServletResponse res, List<DataReturn> retorno) throws IOException {
+	public void toJsonResponse(HttpServletRequest req, HttpServletResponse res, Object retorno) throws IOException {
 		res.setContentType("application/json");
         nioResponse(req, res, JsonWriter.getInstance().getJsonOf(retorno));
 	}

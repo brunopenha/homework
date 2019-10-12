@@ -1,7 +1,6 @@
 package br.nom.penha.bruno.homework.services;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +23,19 @@ public class Services {
 
 		Observable.just(req).flatMap(retorno -> dao.readAll()).subscribe(retorno -> toJsonResponse(req, res, retorno));
 	};
+	
+	ServletAction addAction = (HttpServletRequest req, HttpServletResponse res) -> {
+
+		Observable.just(req) 
+						  .map(request -> (DataReturn) getDataFromXmlBodyRequest(req, DataReturn.class)) 
+						  .flatMap(dto -> dao.create(dto)) 
+						  .subscribe(retorno -> toJsonResponse(req, res,retorno)); 
+	};
+
 
 	public Services() {
 		setService("/api/v1/read", readAllAction);
+		setService("/api/v1/add", addAction);
 	}
 
 	protected synchronized void setService(final String path, final ServletAction action) {
@@ -37,7 +46,7 @@ public class Services {
 		return xmlReader.getDataFromBodyRequest(request, clazz);
 	}
 
-	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, List<DataReturn> retorno)
+	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, Object retorno)
 			throws IOException {
 		handler.toJsonResponse(req, res, retorno);
 	}

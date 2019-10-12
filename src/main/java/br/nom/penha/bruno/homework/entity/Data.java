@@ -41,5 +41,9 @@ public class Data {
 		return amount.toString();
 	}
 	
+	public BigDecimal getAmountBigDecimal() {
+		return amount;
+	}
+	
 	
 }

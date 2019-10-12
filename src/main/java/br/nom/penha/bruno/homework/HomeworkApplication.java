@@ -34,12 +34,7 @@ public class HomeworkApplication extends HttpServlet {
 	private Map<Class, String> servletsMap = new HashMap<>();
 	private List<Services> servicesList = new ArrayList<>();
 
-	public static void main(String[] args) throws Exception {
-		
-				
-		new HomeworkApplication().port(8080).services(new Services()).start();
-	}
-
+	
 	public HomeworkApplication port(int port) {
 		this.port = port;
 		return this;
@@ -83,6 +78,11 @@ public class HomeworkApplication extends HttpServlet {
 		server.setHandler(servletHandler);
 		server.start();
 		server.join();
+	}
+	
+	public static void main(String[] args) throws Exception {
+		
+		new HomeworkApplication().port(8080).services(new Services()).start();
 	}
 
 }
