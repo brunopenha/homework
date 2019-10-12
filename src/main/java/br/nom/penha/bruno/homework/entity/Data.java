@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 @XmlRootElement(name = "data")
@@ -41,6 +43,8 @@ public class Data {
 		return amount.toString();
 	}
 	
+	@JsonIgnore
+	@JsonProperty(value = "amountBigDecimal")
 	public BigDecimal getAmountBigDecimal() {
 		return amount;
 	}
