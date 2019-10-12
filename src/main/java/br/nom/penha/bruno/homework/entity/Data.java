@@ -1,53 +1,45 @@
 package br.nom.penha.bruno.homework.entity;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 @XmlRootElement(name = "data")
+@JsonRootName("data")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Data {
 
-	private String id;
-	private LocalDateTime dataHora;
-	private BigDecimal valor;
 	
+	@XmlElement(name = "timestamp")
+	private Long timestamp;
+	@XmlElement(name = "amount")
+	private BigDecimal amount;
+	
+	public Data() {
+		
+	}
 	
 	public Data(Long datetime, Double value) {
 		super();
-		this.dataHora =  Instant.ofEpochMilli(datetime).atZone(ZoneId.systemDefault()).toLocalDateTime();
-		this.valor = new BigDecimal(value);
-	}
-
-	public String getId() {
-		return id;
+		this.timestamp =  datetime;
+		this.amount = new BigDecimal(value).setScale(6,BigDecimal.ROUND_HALF_UP);
 	}
 	
-	public void setId(String id) {
-		this.id = id;
+	public Long getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(Long dataHora) {
+		this.timestamp = dataHora;
 	}
 	
-	@XmlElement(name = "timestamp")
-	@XmlJavaTypeAdapter(type = LocalDateTime.class, value = br.nom.penha.bruno.homework.adapter.LocalDateTimeAdapter.class)
-	public LocalDateTime getDataHora() {
-		return dataHora;
+	public String getAmount() {
+		return amount.toString();
 	}
-	public void setDataHora(LocalDateTime dataHora) {
-		this.dataHora = dataHora;
-	}
-	
-	@XmlElement(name = "value")
-	public BigDecimal getValor() {
-		return valor;
-	}
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
-	}
-	
 	
 	
 }
