@@ -107,10 +107,7 @@ public class HomeworkApplication extends HttpServlet {
 		
 		HomeworkApplication app = new HomeworkApplication();
 		
-		Properties appProperties = app.carregaPropriedades(ARQUIVO_PROPERTIES_APP);
-		app.port = Integer.parseInt(appProperties.getProperty("port"));
-		
-		if(app.port == 0) {
+		if(args[0] == null) {
 			app.port = 8080;
 		}
 		
