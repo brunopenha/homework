@@ -1,12 +1,13 @@
 package br.nom.penha.bruno.homework.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "dataReturn")
 public class DataReturn {
 	
-	@JsonProperty("data")
-	Data dataReturn;
-
+	@XmlElement(name = "data")
+	Data data;
 	
 	public DataReturn() {
 		
@@ -14,15 +15,15 @@ public class DataReturn {
 	
 	public DataReturn(Data dataObject) {
 		super();
-		this.dataReturn = dataObject;
+		this.data = dataObject;
 	}
 	
-	public Data getDataReturn() {
-		return dataReturn;
+	public Data getData() {
+		return data;
 	}
 
-	public void setDataReturn(Data dataReturn) {
-		this.dataReturn = dataReturn;
+	public void setData(Data dataReturn) {
+		this.data = dataReturn;
 	}
 
 }

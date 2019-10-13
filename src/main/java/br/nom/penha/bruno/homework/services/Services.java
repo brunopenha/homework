@@ -1,6 +1,7 @@
 package br.nom.penha.bruno.homework.services;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +27,10 @@ public class Services {
 	
 	ServletAction addAction = (HttpServletRequest req, HttpServletResponse res) -> {
 
-		Observable.just(req) 
-						  .map(request -> (DataReturn) getDataFromXmlBodyRequest(req, DataReturn.class)) 
-						  .flatMap(dto -> dao.create(dto)) 
-						  .subscribe(retorno -> toJsonResponse(req, res,retorno)); 
+		Observable.just(req) // We want to modified the Observable into another, using the map fuction
+		  .map(request -> (DataReturn) getDataFromJsonBodyRequest(req, DataReturn.class)) // we use th
+		  .flatMap(dto -> dao.create(dto)) 
+		  .subscribe(retorno -> toJsonResponse(req, res,retorno)); 
 	};
 
 
@@ -37,6 +38,7 @@ public class Services {
 		setService("/api/v1/read", readAllAction);
 		setService("/api/v1/add", addAction);
 	}
+
 
 	protected synchronized void setService(final String path, final ServletAction action) {
 		handler.setService(path, action);
@@ -46,8 +48,18 @@ public class Services {
 		return xmlReader.getDataFromBodyRequest(request, clazz);
 	}
 
-	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, Object retorno)
+	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, List<DataReturn> retorno)
 			throws IOException {
 		handler.toJsonResponse(req, res, retorno);
 	}
+	
+	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, DataReturn retorno)
+			throws IOException {
+		handler.toJsonResponse(req, res, retorno);
+	}
+	
+	protected Object getDataFromJsonBodyRequest(final HttpServletRequest request, final Class clazz) throws IOException {
+        return jsonWriter.getDataFromBodyRequest(request, clazz);
+    }
+	
 }

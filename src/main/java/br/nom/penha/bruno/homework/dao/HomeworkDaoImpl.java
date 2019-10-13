@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 
 import br.nom.penha.bruno.homework.entity.Data;
 import br.nom.penha.bruno.homework.entity.DataReturn;
+import br.nom.penha.bruno.homework.entity.Hosts;
 import io.reactivex.Observable;
 
 public class HomeworkDaoImpl implements HomeworkDao {
 
 	Map<Long, DataReturn> dataReturn;
+	
+	Map<String, Hosts> hostList;
 
 	private static HomeworkDao instance;
 
@@ -34,16 +37,16 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	@Override
 	public Observable<DataReturn> create(DataReturn dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getDataReturn().getTimestamp(), new Double(dto.getDataReturn().getAmount())));
-		if(dataReturn.containsKey(dto.getDataReturn().getTimestamp())) {
-			final DataReturn toAdd = dataReturn.get(dto.getDataReturn().getTimestamp());
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getData().getTimestamp(), new Double(dto.getData().getAmount())));
+		if(dataReturn.containsKey(dto.getData().getTimestamp())) {
+			final DataReturn toAdd = dataReturn.get(dto.getData().getTimestamp());
 			
-			BigDecimal total = toAdd.getDataReturn().getAmountBigDecimal().add(dto.getDataReturn().getAmountBigDecimal());
+			BigDecimal total = toAdd.getData().getAmountBigDecimal().add(dto.getData().getAmountBigDecimal());
 			
-			DataReturn added = new DataReturn(new Data(dto.getDataReturn().getTimestamp(), total.doubleValue()));
-			dataReturn.put(dto.getDataReturn().getTimestamp(), added);
+			DataReturn added = new DataReturn(new Data(dto.getData().getTimestamp(), total.doubleValue()));
+			dataReturn.put(dto.getData().getTimestamp(), added);
 		}else {
-			dataReturn.put(dataToBeReturned.getDataReturn().getTimestamp(), dataToBeReturned);	
+			dataReturn.put(dataToBeReturned.getData().getTimestamp(), dataToBeReturned);	
 		}
 		
         return  Observable.fromCallable(() -> dataToBeReturned);

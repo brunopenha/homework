@@ -1,9 +1,11 @@
 package br.nom.penha.bruno.homework.json;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.nom.penha.bruno.homework.entity.DataReturn;
 
 
 public class JsonWriter {
@@ -24,6 +26,16 @@ public class JsonWriter {
     	
         return mapper.writeValueAsString(data);
     }
-
+    
+    public Object getDataFromBodyRequest(final HttpServletRequest request, final Class clazz) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String s;
+        while ((s = request.getReader().readLine()) != null) {
+            sb.append(s);
+        }
+        final ObjectMapper objectMapper = new ObjectMapper();
+        
+        return objectMapper.readValue(sb.toString(), clazz);
+    }
 
 }

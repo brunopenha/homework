@@ -58,8 +58,8 @@ public class HomeworkDaoImplTest {
 		
 		List<DataReturn> total = dao.readAll("test");
 		  
-		assertEquals( expected.getAmount()   ,total.get(0).getDataReturn().getAmount()   );
-		assertEquals( expected.getTimestamp(),total.get(0).getDataReturn().getTimestamp());
+		assertEquals( expected.getAmount()   ,total.get(0).getData().getAmount()   );
+		assertEquals( expected.getTimestamp(),total.get(0).getData().getTimestamp());
 		
 	}
 
