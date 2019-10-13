@@ -3,15 +3,32 @@ package br.nom.penha.bruno.homework.entity;
 public class Hosts {
 
 	private String hostname;
-	private int portNumber;
-	private String endPoint;
-
-	public String getEndPoint() {
-		return endPoint;
+	private int port;
+	private String endpoint;
+	
+	public Hosts() {
+		
+	}
+	
+	public Hosts(String hostname, int portNumber) {
+		super();
+		this.hostname = hostname;
+		this.port = portNumber;
+	}
+	
+	public Hosts(String hostname, int portNumber, String endpoint) {
+		super();
+		this.hostname = hostname;
+		this.port = portNumber;
+		this.endpoint = endpoint;
 	}
 
-	public void setEndPoint(String endPoint) {
-		this.endPoint = endPoint;
+	public String getEndpoint() {
+		return endpoint;
+	}
+
+	public void setEndpoint(String endPoint) {
+		this.endpoint = endPoint;
 	}
 
 	public String getHostname() {
@@ -22,12 +39,12 @@ public class Hosts {
 		this.hostname = hostname;
 	}
 
-	public int getPortNumber() {
-		return portNumber;
+	public int getPort() {
+		return port;
 	}
 
-	public void setPortNumber(int portNumber) {
-		this.portNumber = portNumber;
+	public void setPort(int portNumber) {
+		this.port = portNumber;
 	}
 
 }

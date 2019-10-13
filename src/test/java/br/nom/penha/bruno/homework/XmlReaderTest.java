@@ -24,10 +24,10 @@ public class XmlReaderTest {
     public void stringTest(){
         Data o = new Data(123456789l, new Double(1234.567890));
         String xmlString = xmlReader.getXmlOf(o);
-        assertEquals(xmlString, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<data>\n" +
-                "    <timestamp>123456789</timestamp>\n" +
+        assertEquals(xmlString, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + 
+        		"<data>\n" +
                 "    <amount>1234.567890</amount>\n" +
+                "    <timestamp>123456789</timestamp>\n" +
                 "</data>\n");
     }
     

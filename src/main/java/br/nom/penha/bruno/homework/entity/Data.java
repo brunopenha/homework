@@ -2,22 +2,15 @@ package br.nom.penha.bruno.homework.entity;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-@XmlRootElement(name = "data")
-@JsonRootName("data")
-@XmlAccessorType(XmlAccessType.NONE)
 public class Data {
 
 	
-	@XmlElement(name = "timestamp")
 	private Long timestamp;
 	@XmlElement(name = "amount")
 	private BigDecimal amount;

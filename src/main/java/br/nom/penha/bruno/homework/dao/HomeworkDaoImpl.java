@@ -31,6 +31,7 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	private void initDB() {
 		dataReturn = new HashMap<Long, DataReturn>();
+		hostList = new HashMap<String, Hosts>();
 //		DataReturn data1 = new DataReturn(new Data(123456789l, new Double(1234.567890)));
 //        dataReturn.put(data1.getDataReturn().getTimestamp(),data1);
 	}
@@ -44,7 +45,7 @@ public class HomeworkDaoImpl implements HomeworkDao {
 			BigDecimal total = toAdd.getData().getAmountBigDecimal().add(dto.getData().getAmountBigDecimal());
 			
 			DataReturn added = new DataReturn(new Data(dto.getData().getTimestamp(), total.doubleValue()));
-			dataReturn.put(dto.getData().getTimestamp(), added);
+			dataReturn.replace(dto.getData().getTimestamp(), added);
 		}else {
 			dataReturn.put(dataToBeReturned.getData().getTimestamp(), dataToBeReturned);	
 		}
@@ -66,5 +67,39 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	public List<DataReturn> readAll(String test) {
         return dataReturn.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
     }
+	
+	@Override
+	public Observable<List<Hosts>> readAllHosts() {
+		return Observable.fromCallable(() -> new ArrayList<>(hostList.values()));
+	}
+	
+	@Override
+	public Observable<Hosts> createHost(Hosts host) {
+		final String key = host.getHostname() + host.getPort();
+		if(hostList.containsKey(key)) {
+			hostList.replace(key, host);
+		}else {
+			hostList.put(key, host);	
+		}
+		
+        return  Observable.fromCallable(() -> host);
+	}
+
+	@Override
+	public Observable<Optional<Hosts>> removeHost(String stringId) {
+		
+		if(hostList.containsKey(stringId)) {
+			hostList.remove(stringId);
+		}
+		
+		return Observable.fromCallable(() -> Optional.ofNullable(hostList.get(stringId)));
+        
+	}
+
+	@Override
+	public Observable<Optional<Hosts>> readHost(String stringId) {
+		return Observable.fromCallable(() -> Optional.ofNullable(hostList.get(stringId)));
+	}
+
 
 }
