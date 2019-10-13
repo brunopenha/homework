@@ -2,7 +2,7 @@ package br.nom.penha.bruno.homework.services;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +17,8 @@ import br.nom.penha.bruno.homework.xml.XmlReader;
 import io.reactivex.Observable;
 
 public class Services {
+	
+	private final static Logger log = Logger.getLogger(Services.class.getName());
 
 	protected ServiceHandler handler = ServiceHandler.getInstance();
 	protected JsonWriter jsonWriter = JsonWriter.getInstance();
@@ -50,6 +52,15 @@ public class Services {
 			.flatMap(retorno -> dao.readAllHosts())
 			.subscribe(retorno -> toJsonResponse(req, res, retorno));
 	};
+	
+	ServletAction getXML = (HttpServletRequest req, HttpServletResponse res) -> {
+
+		Observable.just(req)
+			.flatMap(retorno -> dao.loadData())
+			.subscribe(retorno -> toJsonResponse(req, res, retorno.get()));
+	};
+	
+	
 
 	ServletAction readHostsQuery = (HttpServletRequest req, HttpServletResponse res) -> {
 		
@@ -74,6 +85,11 @@ public class Services {
 		}
 
 	};
+	
+	ServletAction readStatus = (HttpServletRequest req, HttpServletResponse res) -> {
+
+		Observable.just(req).flatMap(retorno -> dao.readStatus()).subscribe(retorno -> toJsonResponse(req, res, retorno.get()));
+	};
 
 	public Services() {
 		setService("/api/v1/read", readAllData);
@@ -81,6 +97,8 @@ public class Services {
 		setService("/api/v1/setup", addHosts);
 		setService("/api/v1/hosts/{host}", readHostsQuery);
 		setService("/api/v1/hosts", readHosts);
+		setService("/api/v1/load", getXML);
+		setService("/api/v1/status", readStatus);
 	}
 
 	protected synchronized void setService(final String path, final ServletAction action) {

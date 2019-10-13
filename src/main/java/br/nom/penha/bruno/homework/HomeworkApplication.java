@@ -1,5 +1,8 @@
 package br.nom.penha.bruno.homework;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -7,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -28,6 +32,7 @@ public class HomeworkApplication extends HttpServlet {
 	private static final long serialVersionUID = 161314014280643519L;
 
 	private final static Logger log = Logger.getLogger(HomeworkApplication.class.getName());
+	private static final String ARQUIVO_PROPERTIES_APP = "application.properties";
 
 	private int port;
 	private ServletHandler servletHandler = new ServletHandler();
@@ -80,9 +85,36 @@ public class HomeworkApplication extends HttpServlet {
 		server.join();
 	}
 	
+	private Properties carregaPropriedades(String nameFile) {
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File arquivoConfiguracao = new File(classLoader.getResource(nameFile).getFile());
+
+		Properties propriedades = null;
+		try (FileInputStream arquivo = new FileInputStream(arquivoConfiguracao)) {
+			
+			propriedades = new Properties();
+			propriedades.load(arquivo);
+		} catch (FileNotFoundException e) {
+			log.severe("Verifique se o arquivo existe dentro do diretorio resources");
+		} catch (IOException e) {
+			log.severe("Verifique se o arquivo nao contem dados invalidos");
+		} 
+		return propriedades;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		
-		new HomeworkApplication().port(8080).services(new Services()).start();
+		HomeworkApplication app = new HomeworkApplication();
+		
+		Properties appProperties = app.carregaPropriedades(ARQUIVO_PROPERTIES_APP);
+		app.port = Integer.parseInt(appProperties.getProperty("port"));
+		
+		if(app.port == 0) {
+			app.port = 8080;
+		}
+		
+		app.services(new Services()).start();
 	}
 
 }

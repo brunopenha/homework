@@ -1,23 +1,33 @@
 package br.nom.penha.bruno.homework.dao;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import br.nom.penha.bruno.homework.entity.Data;
 import br.nom.penha.bruno.homework.entity.DataReturn;
 import br.nom.penha.bruno.homework.entity.Hosts;
+import br.nom.penha.bruno.homework.entity.LoadStatus;
+import br.nom.penha.bruno.homework.xml.consumer.ConsumerXML;
 import io.reactivex.Observable;
 
 public class HomeworkDaoImpl implements HomeworkDao {
 
+	private final static Logger log = Logger.getLogger(HomeworkDaoImpl.class.getName());
+
 	Map<Long, DataReturn> dataReturn;
 	
 	Map<String, Hosts> hostList;
+	
+	LoadStatus loadStatus;
 
 	private static HomeworkDao instance;
 
@@ -32,8 +42,7 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	private void initDB() {
 		dataReturn = new HashMap<Long, DataReturn>();
 		hostList = new HashMap<String, Hosts>();
-//		DataReturn data1 = new DataReturn(new Data(123456789l, new Double(1234.567890)));
-//        dataReturn.put(data1.getDataReturn().getTimestamp(),data1);
+		loadStatus = new LoadStatus();
 	}
 
 	@Override
@@ -51,6 +60,22 @@ public class HomeworkDaoImpl implements HomeworkDao {
 		}
 		
         return  Observable.fromCallable(() -> dataToBeReturned);
+	}
+	
+	@Override
+	public void create(Data dto) {
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(), new Double(dto.getAmount())));
+		if(dataReturn.containsKey(dto.getTimestamp())) {
+			final DataReturn toAdd = dataReturn.get(dto.getTimestamp());
+			
+			BigDecimal total = toAdd.getData().getAmountBigDecimal().add(dto.getAmountBigDecimal());
+			
+			DataReturn added = new DataReturn(new Data(dto.getTimestamp(), total.doubleValue()));
+			dataReturn.replace(dto.getTimestamp(), added);
+		}else {
+			dataReturn.put(dataToBeReturned.getData().getTimestamp(), dataToBeReturned);	
+		}
+		log.log(Level.FINE, "******** XML sLoaded ********");
 	}
 
 	@Override
@@ -99,6 +124,51 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	@Override
 	public Observable<Optional<Hosts>> readHost(String stringId) {
 		return Observable.fromCallable(() -> Optional.ofNullable(hostList.get(stringId)));
+	}
+
+	@Override
+	public Observable<Optional<LoadStatus>> loadData() {
+		
+		ConsumerXML consumer = ConsumerXML.getInstance(this);
+		try {
+			for (Hosts host : hostList.values()) {
+				//FIXME Normally should be an layer to request external service
+				final String xmls = consumer.consumeXml("http://" + host.getHostname() + ":" + host.getPort() + host.getEndpoint());
+				loadStatus = consumer.extractXML(xmls);
+				
+			}
+		} catch (Exception e) {
+
+			loadStatus.setError(true);
+			loadStatus.setStatus(e.getMessage());
+		
+		}
+		
+		return Observable.fromCallable(() -> Optional.ofNullable(loadStatus));
+	}
+
+	@Override
+	public void createStatus() {
+		
+		loadStatus = new LoadStatus();
+		loadStatus.setSize(0l);
+		loadStatus.setError(false);
+		loadStatus.setLoaded(false);
+		loadStatus.setStatus("Started in dd/MM/yyyy -  " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+		
+	}
+
+	@Override
+	public void updateStatus(LoadStatus status) {
+		if(status != null) {
+			loadStatus = status;
+		}
+		
+	}
+
+	@Override
+	public Observable<Optional<LoadStatus>> readStatus() {
+		return Observable.fromCallable(() -> Optional.ofNullable(loadStatus));
 	}
 
 

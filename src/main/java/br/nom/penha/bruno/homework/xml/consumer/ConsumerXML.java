@@ -6,35 +6,35 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXB;
 
+import br.nom.penha.bruno.homework.dao.HomeworkDao;
+import br.nom.penha.bruno.homework.dao.HomeworkDaoImpl;
 import br.nom.penha.bruno.homework.entity.Data;
-import br.nom.penha.bruno.homework.entity.DataReturn;
+import br.nom.penha.bruno.homework.entity.LoadStatus;
+import br.nom.penha.bruno.homework.services.Services;
 
 public class ConsumerXML {
 
-	public static void main(String[] args) throws JAXBException {
+	private final static Logger log = Logger.getLogger(Services.class.getName());
 
-		Map<Long, DataReturn> listaTeste = ConsumerXML.consumeXml("http://localhost:8383/api/v1/readxml");
-		System.out.println(listaTeste.size());
-
+	private static ConsumerXML instance;
+	
+	private static HomeworkDao dao ;
+	
+	public static ConsumerXML getInstance(HomeworkDao daoCreated) {
+		dao = daoCreated;
+		return (instance != null) ? instance : new ConsumerXML();
 	}
-
-	public static Map<Long, DataReturn> consumeXml(String url) throws JAXBException {
-
-		Map<Long, DataReturn> dataReceive = null;
-//		Client client = ClientBuilder.newClient();
-////		Response response = client.target(url).request().get();
-//		
-//		WebTarget webTarget = client.target("http://localhost:8383/");
-//		WebTarget dataWebTarget  = webTarget.path("rapi/v1/readxml");
-//		Data dto = (Data) XmlReader.getInstance().getDataFromBodyRequest(dataWebTarget, Data.class);
+	
+	public String consumeXml(String url) {
 
 		StringBuilder sURL = new StringBuilder(100);
 		StringBuilder sb1 = new StringBuilder();
@@ -47,35 +47,57 @@ public class ConsumerXML {
 				sb1.append((char) cp);
 			}
 		} catch (Exception me) {
-			System.out.println("## Exception :" + me.getMessage());
+			log.log(Level.SEVERE, "## consumeXml :", me.getMessage());
 		}
-		String apiOutput = removeCaracters(sb1.toString(), "[^a-zA-Z0-9.\n </>]").replaceAll("(?m)<xml.*", "");
-		apiOutput = removeCaracters(apiOutput, "xml file content : tH");
-		apiOutput = removeCaracters(apiOutput, "xml file content : t7\n");
-		apiOutput = removeCaracters(apiOutput, "t7\n");
-		System.out.println("xml file content : " + apiOutput);
-		JAXBContext jaxbContext = JAXBContext.newInstance(DataReturn.class);
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		StringReader reader = new StringReader(apiOutput);
 
-		DataReturn uu = (DataReturn) unmarshaller.unmarshal(reader);
-
-//        for (int i=0; i<uu.getDataReturn().size();i++) {
-//        	Data u = uu.getData.get(i);
-//            System.out.println("Yes:"+u.getAmount());
-//        }
-		return dataReceive;
+		return sb1.toString();
 	}
+	
+	public LoadStatus extractXML(final String xmls) {
+		LoadStatus status = new LoadStatus();
+		LocalDateTime dateTime = LocalDateTime.now();
+		
+		dao.createStatus();
+		status.setStatus("Started at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+		
 
-	private static String removeCaracters(String output, String pattern) {
-		Pattern pt = Pattern.compile(pattern);
-		Matcher match = pt.matcher(output);
-		while (match.find()) {
-			final String acceptCaracters = match.group();
-			output = output.replaceAll("\\" + acceptCaracters, "");
+		Pattern pt = Pattern.compile("<data>(.+?)</data>", Pattern.DOTALL);
+		Matcher m = pt.matcher(xmls);
+
+		
+		try {
+			for(long i = 0; m.find(); i++) {
+				log.log(Level.FINEST, "Matched - [%s]%n", m.group(1)); // outputs [line2]
+				final StringBuffer sb = new StringBuffer(86);
+				sb.append("<data>").append(m.group(1)).append("</data>");
+
+				Data data = JAXB.unmarshal(new StringReader(sb.toString()), Data.class);
+				dao.create(data);
+				
+				status.setSize(i);
+				status.setStatus("Loading... dd/MM/yyyy - " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+				
+				dao.updateStatus(status);
+				
+
+			}
+		} catch (Exception e) {
+			status.setError(true);
+			status.setStatus(e.getMessage());
+			
+			dao.updateStatus(status);
+			
+		}finally {
+			status.setLoaded(true);
+			status.setStatus("Stopped at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+			dao.updateStatus(status);
 		}
-
-		return output;
+		
+		if(!status.isError()) {
+			status.setLoaded(true);
+		}
+		dao.updateStatus(status);
+		return status;
 	}
 
 }
