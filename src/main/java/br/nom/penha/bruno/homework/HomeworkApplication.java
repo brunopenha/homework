@@ -107,9 +107,13 @@ public class HomeworkApplication extends HttpServlet {
 		
 		HomeworkApplication app = new HomeworkApplication();
 		
-		if(args[0] == null) {
+		
+		try {
+			app.port = Integer.parseInt(args[0]);
+		} catch (ArrayIndexOutOfBoundsException e) {
 			app.port = 8080;
 		}
+		
 		
 		app.services(new Services()).start();
 	}

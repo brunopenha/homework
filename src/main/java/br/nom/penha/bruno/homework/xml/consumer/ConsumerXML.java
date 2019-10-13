@@ -47,7 +47,7 @@ public class ConsumerXML {
 				sb1.append((char) cp);
 			}
 		} catch (Exception me) {
-			log.log(Level.SEVERE, "## consumeXml :", me.getMessage());
+			log.log(Level.SEVERE, "## consumeXml :" + me.getMessage(), me);
 		}
 
 		return sb1.toString();
@@ -58,7 +58,7 @@ public class ConsumerXML {
 		LocalDateTime dateTime = LocalDateTime.now();
 		
 		dao.createStatus();
-		status.setStatus("Started at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+		status.setStatus("Started at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 		
 
 		Pattern pt = Pattern.compile("<data>(.+?)</data>", Pattern.DOTALL);
@@ -75,7 +75,7 @@ public class ConsumerXML {
 				dao.create(data);
 				
 				status.setSize(i);
-				status.setStatus("Loading... dd/MM/yyyy - " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+				status.setStatus("Loading... dd/MM/yyyy - " + dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 				
 				dao.updateStatus(status);
 				
@@ -89,7 +89,7 @@ public class ConsumerXML {
 			
 		}finally {
 			status.setLoaded(true);
-			status.setStatus("Stopped at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+			status.setStatus("Stopped at dd/MM/yyyy -  " + dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 			dao.updateStatus(status);
 		}
 		
