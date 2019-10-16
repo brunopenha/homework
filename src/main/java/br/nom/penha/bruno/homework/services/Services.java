@@ -15,6 +15,11 @@ import br.nom.penha.bruno.homework.json.JsonWriter;
 import br.nom.penha.bruno.homework.xml.XmlReader;
 import io.reactivex.Observable;
 
+/**
+ * Class that implements the endpoints created in this class constructor
+ * @author brunopenha
+ *
+ */
 public class Services {
 	
 //	private final static Logger log = Logger.getLogger(Services.class.getName());
@@ -24,11 +29,17 @@ public class Services {
 	protected XmlReader xmlReader = XmlReader.getInstance();
 	private final HomeworkDao dao = HomeworkDaoImpl.getInstance();
 
+	/**
+	 * Return all XML data stored here in JSON format
+	 */
 	ServletAction readAllData = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req).flatMap(retorno -> dao.readAll()).subscribe(retorno -> toJsonResponse(req, res, retorno));
 	};
 
+	/**
+	 * Return JSON of one XML sent by the body request
+	 */
 	ServletAction addData = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req) // We want to modified the Observable into another, using the map fuction
@@ -36,6 +47,9 @@ public class Services {
 				.flatMap(dto -> dao.create(dto)).subscribe(retorno -> toJsonResponse(req, res, retorno));
 	};
 
+	/**
+	 * Return in JSON format the host which will be use to load the XML data
+	 */
 	ServletAction addHosts = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req) // We want to modified the Observable into another, using the map fuction
@@ -45,6 +59,9 @@ public class Services {
 
 	};
 
+	/**
+	 * Return in JSON format all registered hosts
+	 */
 	ServletAction readHosts = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req)
@@ -52,6 +69,9 @@ public class Services {
 			.subscribe(retorno -> toJsonResponse(req, res, retorno));
 	};
 	
+	/**
+	 * Load the XML data at the registered hosts
+	 */
 	ServletAction getXML = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req)
@@ -61,6 +81,11 @@ public class Services {
 	
 	
 
+	/**
+	 * Depends of {@link HttpMethod} used this method may using the parameter {host}  (the {host} is the host name + port number of the host):
+	 *    - if is an {@link HttpMethod.GET}, will return the host information
+	 *    - if is an {@link HttpMethod.DELETE}, will remove the host
+	 */
 	ServletAction readHostsQuery = (HttpServletRequest req, HttpServletResponse res) -> {
 		
 		
@@ -85,11 +110,17 @@ public class Services {
 
 	};
 	
+	/**
+	 * Return in JSON format the status of the data load from the registered hosts
+	 */
 	ServletAction readStatus = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req).flatMap(retorno -> dao.readStatus()).subscribe(retorno -> toJsonResponse(req, res, retorno.get()));
 	};
 
+	/**
+	 * public constructor which will open this endpoints to receive HTTP requests from outside
+	 */
 	public Services() {
 		setService("/api/v1/read", readAllData);
 		setService("/api/v1/add", addData);
@@ -112,15 +143,6 @@ public class Services {
 		handler.toJsonResponse(req, res, retorno);
 	}
 
-//	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, List<DataReturn> retorno)
-//			throws IOException {
-//		handler.toJsonResponse(req, res, retorno);
-//	}
-//	
-//	private void toJsonResponse(HttpServletRequest req, HttpServletResponse res, DataReturn retorno)
-//			throws IOException {
-//		handler.toJsonResponse(req, res, retorno);
-//	}
 
 	@SuppressWarnings("rawtypes")
 	protected Object getDataFromJsonBodyRequest(final HttpServletRequest request, final Class clazz)
