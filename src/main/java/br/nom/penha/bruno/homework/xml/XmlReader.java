@@ -5,10 +5,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.WebTarget;
 import javax.xml.bind.JAXB;
-
-import br.nom.penha.bruno.homework.entity.Data;
 
 public class XmlReader {
 
@@ -39,6 +36,8 @@ public class XmlReader {
     public String getXmlOf(final Object object){
         StringWriter sw = new StringWriter();
         JAXB.marshal(object, sw);
+        
+        
         return sw.toString();
     }
 

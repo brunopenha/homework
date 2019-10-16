@@ -47,11 +47,11 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	@Override
 	public Observable<DataReturn> create(DataReturn dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getData().getTimestamp(), new Double(dto.getData().getAmount())));
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getData().getTimestamp(), Double.valueOf(dto.getData().getAmount())));
 		if(dataReturn.containsKey(dto.getData().getTimestamp())) {
 			final DataReturn toAdd = dataReturn.get(dto.getData().getTimestamp());
 			
-			BigDecimal total = toAdd.getData().getAmountBigDecimal().add(dto.getData().getAmountBigDecimal());
+			BigDecimal total = new BigDecimal(toAdd.getData().getAmount()).add(new BigDecimal(dto.getData().getAmount()));
 			
 			DataReturn added = new DataReturn(new Data(dto.getData().getTimestamp(), total.doubleValue()));
 			dataReturn.replace(dto.getData().getTimestamp(), added);
@@ -64,11 +64,11 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	
 	@Override
 	public void create(Data dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(), new Double(dto.getAmount())));
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(), Double.valueOf(dto.getAmount())));
 		if(dataReturn.containsKey(dto.getTimestamp())) {
 			final DataReturn toAdd = dataReturn.get(dto.getTimestamp());
 			
-			BigDecimal total = toAdd.getData().getAmountBigDecimal().add(dto.getAmountBigDecimal());
+			BigDecimal total = new BigDecimal(toAdd.getData().getAmount()).add(new BigDecimal(dto.getAmount()));
 			
 			DataReturn added = new DataReturn(new Data(dto.getTimestamp(), total.doubleValue()));
 			dataReturn.replace(dto.getTimestamp(), added);

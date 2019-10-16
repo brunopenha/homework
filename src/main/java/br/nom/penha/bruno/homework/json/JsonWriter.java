@@ -2,16 +2,18 @@ package br.nom.penha.bruno.homework.json;
 
 import java.io.IOException;
 
+import javax.json.bind.Jsonb;
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.yasson.internal.JsonBindingBuilder;
+
+
 
 
 public class JsonWriter {
 
     private static JsonWriter instance = null;
-        
+    private static Jsonb jsonb = new JsonBindingBuilder().build();
 
     public static JsonWriter getInstance(){
         if(instance == null){
@@ -20,11 +22,10 @@ public class JsonWriter {
         return instance;
     }
 
-    public String getJsonOf(final Object data) throws JsonProcessingException{
+    public String getJsonOf(final Object data) {
     	
-    	final ObjectMapper mapper = new ObjectMapper();
     	
-        return mapper.writeValueAsString(data);
+        return jsonb.toJson(data) ;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -34,9 +35,9 @@ public class JsonWriter {
         while ((s = request.getReader().readLine()) != null) {
             sb.append(s);
         }
-        final ObjectMapper objectMapper = new ObjectMapper();
         
-        return objectMapper.readValue(sb.toString(), clazz);
+        
+        return jsonb.fromJson(sb.toString(), clazz);
     }
 
 }

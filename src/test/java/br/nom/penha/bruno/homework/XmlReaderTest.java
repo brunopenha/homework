@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
@@ -21,8 +22,8 @@ public class XmlReaderTest {
 	XmlReader xmlReader = XmlReader.getInstance();
 
     @Test
-    public void stringTest(){
-        Data o = new Data(123456789l, new Double(1234.567890));
+    public void stringTest() throws JAXBException{
+        Data o = new Data(123456789l, Double.valueOf(1234.567890));
         String xmlString = xmlReader.getXmlOf(o);
         assertEquals(xmlString, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + 
         		"<data>\n" +
@@ -40,7 +41,7 @@ public class XmlReaderTest {
 			                "    <amount>1234.567890</amount>\n" +
 			                "</data>\n";
         
-        Data expected = new Data(123456789l, new Double(1234.567890));
+        Data expected = new Data(123456789l, Double.valueOf(1234.567890));
         
         
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
@@ -53,6 +54,7 @@ public class XmlReaderTest {
         assertEquals(dto.getAmount(),expected.getAmount());
         assertEquals(dto.getTimestamp(),expected.getTimestamp());
     }
+    
    
 
 }

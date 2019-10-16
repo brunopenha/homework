@@ -1,11 +1,9 @@
 package br.nom.penha.bruno.homework.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.xml.bind.annotation.XmlElement;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Data {
 
@@ -21,7 +19,7 @@ public class Data {
 	public Data(Long datetime, Double value) {
 		super();
 		this.timestamp =  datetime;
-		this.amount = new BigDecimal(value).setScale(6,BigDecimal.ROUND_HALF_UP);
+		this.amount = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
 	}
 	
 	public Long getTimestamp() {
@@ -35,11 +33,10 @@ public class Data {
 		return amount.toString();
 	}
 	
-	@JsonIgnore
-	@JsonProperty(value = "amountBigDecimal")
-	public BigDecimal getAmountBigDecimal() {
-		return amount;
-	}
+//	@JsonbProperty(value = "amountBigDecimal")
+//	public BigDecimal getAmountBigDecimal() {
+//		return amount;
+//	}
 	
 	@Override
 	public int hashCode() {
