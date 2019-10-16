@@ -27,7 +27,8 @@ public class JsonWriter {
         return mapper.writeValueAsString(data);
     }
     
-    public Object getDataFromBodyRequest(final HttpServletRequest request, final Class clazz) throws IOException {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Object getDataFromBodyRequest(final HttpServletRequest request, final Class clazz) throws IOException {
         StringBuilder sb = new StringBuilder();
         String s;
         while ((s = request.getReader().readLine()) != null) {

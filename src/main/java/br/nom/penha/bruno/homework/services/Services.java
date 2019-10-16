@@ -2,7 +2,6 @@ package br.nom.penha.bruno.homework.services;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ import io.reactivex.Observable;
 
 public class Services {
 	
-	private final static Logger log = Logger.getLogger(Services.class.getName());
+//	private final static Logger log = Logger.getLogger(Services.class.getName());
 
 	protected ServiceHandler handler = ServiceHandler.getInstance();
 	protected JsonWriter jsonWriter = JsonWriter.getInstance();
@@ -105,7 +104,7 @@ public class Services {
 		handler.setService(path, action);
 	}
 
-	protected Object getDataFromXmlBodyRequest(final HttpServletRequest request, final Class clazz) throws IOException {
+	protected Object getDataFromXmlBodyRequest(final HttpServletRequest request, @SuppressWarnings("rawtypes") final Class clazz) throws IOException {
 		return xmlReader.getDataFromBodyRequest(request, clazz);
 	}
 
@@ -123,6 +122,7 @@ public class Services {
 //		handler.toJsonResponse(req, res, retorno);
 //	}
 
+	@SuppressWarnings("rawtypes")
 	protected Object getDataFromJsonBodyRequest(final HttpServletRequest request, final Class clazz)
 			throws IOException {
 		return jsonWriter.getDataFromBodyRequest(request, clazz);
