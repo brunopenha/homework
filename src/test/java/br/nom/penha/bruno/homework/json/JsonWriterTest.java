@@ -2,6 +2,8 @@ package br.nom.penha.bruno.homework.json;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
+
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -19,10 +21,10 @@ public class JsonWriterTest {
 	@Test
 	public void testGetJsonOf()  {
 		
-		String jsonString = "{\"data\":{\"amount\":\"1234.567890\",\"timestamp\":123456789}}";
+		String jsonString = "{\"data\":{\"amount\":1234.567890,\"timestamp\":123456789}}";
 	
 		
-		DataReturn data = new DataReturn(new Data(123456789l, Double.valueOf(1234.567890)));
+		DataReturn data = new DataReturn(new Data(123456789l, new BigDecimal(1234.567890)));
 		assertEquals(jsonString,writer.getJsonOf(data));
 	}
 	

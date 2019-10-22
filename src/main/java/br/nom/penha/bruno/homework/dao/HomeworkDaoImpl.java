@@ -31,8 +31,11 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	private static HomeworkDao instance;
 
-	public static HomeworkDao getInstance() {
-		return (instance != null) ? instance : new HomeworkDaoImpl();
+	public static synchronized HomeworkDao getInstance() {
+		if(instance == null){
+            instance = new HomeworkDaoImpl();
+        }
+        return instance;
 	}
 
 	private HomeworkDaoImpl() {
@@ -47,13 +50,13 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	@Override
 	public Observable<DataReturn> create(DataReturn dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getData().getTimestamp(), Double.valueOf(dto.getData().getAmount())));
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getData().getTimestamp(), dto.getData().getAmount()));
 		if(dataReturn.containsKey(dto.getData().getTimestamp())) {
 			final DataReturn toAdd = dataReturn.get(dto.getData().getTimestamp());
 			
-			BigDecimal total = new BigDecimal(toAdd.getData().getAmount()).add(new BigDecimal(dto.getData().getAmount()));
+			BigDecimal total = toAdd.getData().getAmount().add(dto.getData().getAmount());
 			
-			DataReturn added = new DataReturn(new Data(dto.getData().getTimestamp(), total.doubleValue()));
+			DataReturn added = new DataReturn(new Data(dto.getData().getTimestamp(), total));
 			dataReturn.replace(dto.getData().getTimestamp(), added);
 		}else {
 			dataReturn.put(dataToBeReturned.getData().getTimestamp(), dataToBeReturned);	
@@ -64,18 +67,18 @@ public class HomeworkDaoImpl implements HomeworkDao {
 	
 	@Override
 	public void create(Data dto) {
-		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(), Double.valueOf(dto.getAmount())));
+		DataReturn dataToBeReturned = new DataReturn(new Data(dto.getTimestamp(),dto.getAmount()));
 		if(dataReturn.containsKey(dto.getTimestamp())) {
 			final DataReturn toAdd = dataReturn.get(dto.getTimestamp());
 			
-			BigDecimal total = new BigDecimal(toAdd.getData().getAmount()).add(new BigDecimal(dto.getAmount()));
+			BigDecimal total = toAdd.getData().getAmount().add(dto.getAmount());
 			
-			DataReturn added = new DataReturn(new Data(dto.getTimestamp(), total.doubleValue()));
+			DataReturn added = new DataReturn(new Data(dto.getTimestamp(), total));
 			dataReturn.replace(dto.getTimestamp(), added);
 		}else {
 			dataReturn.put(dataToBeReturned.getData().getTimestamp(), dataToBeReturned);	
 		}
-		log.log(Level.FINE, "******** XML sLoaded ********");
+		log.log(Level.FINE, "******** XMLs Loaded ********");
 	}
 
 	@Override

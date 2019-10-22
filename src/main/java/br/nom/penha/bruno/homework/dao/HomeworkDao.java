@@ -52,7 +52,7 @@ public interface HomeworkDao {
 	 * associate correctly
 	 * 
 	 * @param test String just use to test
-	 * @return @return Object {@link List} with all {@link DataReturn} data created
+	 * @return Object {@link List} with all {@link DataReturn} data created
 	 *         at the test
 	 */
 	List<DataReturn> readAll(String test);

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import org.mockito.Mockito;
 import br.nom.penha.bruno.homework.entity.Data;
 import br.nom.penha.bruno.homework.entity.DataReturn;
 import br.nom.penha.bruno.homework.xml.XmlReader;
-import io.reactivex.Observable;
 
 public class HomeworkDaoImplTest {
 
@@ -32,7 +32,7 @@ public class HomeworkDaoImplTest {
 		String xmlString3 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<data>\n"
 				+ "    <timestamp>123456789</timestamp>\n" + "    <amount>0.000010</amount>\n" + "</data>\n";
 
-		Data expected = new Data(123456789l, new Double(1234.567901));
+		Data expected = new Data(123456789l, new BigDecimal(1234.567901));
 
 		HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
 		BufferedReader buffReader = new BufferedReader(new StringReader(xmlString));

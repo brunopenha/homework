@@ -15,7 +15,7 @@ public class JsonWriter {
     private static JsonWriter instance = null;
     private static Jsonb jsonb = new JsonBindingBuilder().build();
 
-    public static JsonWriter getInstance(){
+    public static synchronized JsonWriter getInstance(){
         if(instance == null){
             instance = new JsonWriter();
         }

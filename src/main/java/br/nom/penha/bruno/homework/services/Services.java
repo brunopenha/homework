@@ -20,7 +20,7 @@ import io.reactivex.Observable;
  * @author brunopenha
  *
  */
-public class Services {
+final public class Services {
 	
 //	private final static Logger log = Logger.getLogger(Services.class.getName());
 

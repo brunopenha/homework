@@ -16,10 +16,10 @@ public class Data {
 		
 	}
 	
-	public Data(Long datetime, Double value) {
+	public Data(Long datetime, BigDecimal value) {
 		super();
 		this.timestamp =  datetime;
-		this.amount = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
+		this.amount = value.setScale(6, RoundingMode.HALF_UP);
 	}
 	
 	public Long getTimestamp() {
@@ -29,8 +29,8 @@ public class Data {
 		this.timestamp = dataHora;
 	}
 	
-	public String getAmount() {
-		return amount.toString();
+	public BigDecimal getAmount() {
+		return amount;
 	}
 	
 //	@JsonbProperty(value = "amountBigDecimal")

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
@@ -23,7 +24,7 @@ public class XmlReaderTest {
 
     @Test
     public void stringTest() throws JAXBException{
-        Data o = new Data(123456789l, Double.valueOf(1234.567890));
+        Data o = new Data(123456789l, new BigDecimal(1234.567890));
         String xmlString = xmlReader.getXmlOf(o);
         assertEquals(xmlString, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + 
         		"<data>\n" +
@@ -41,7 +42,7 @@ public class XmlReaderTest {
 			                "    <amount>1234.567890</amount>\n" +
 			                "</data>\n";
         
-        Data expected = new Data(123456789l, Double.valueOf(1234.567890));
+        Data expected = new Data(123456789l, new BigDecimal(1234.567890));
         
         
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);

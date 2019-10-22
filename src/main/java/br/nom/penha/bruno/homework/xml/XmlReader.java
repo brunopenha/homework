@@ -10,7 +10,8 @@ import javax.xml.bind.JAXB;
 public class XmlReader {
 
     private static XmlReader instance = null;
-    public static XmlReader getInstance(){
+    
+    public static synchronized XmlReader getInstance(){
         if(instance == null){
             instance = new XmlReader();
         }

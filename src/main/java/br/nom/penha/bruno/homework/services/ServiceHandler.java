@@ -54,7 +54,8 @@ public class ServiceHandler {
 
 	private void nioResponse(HttpServletRequest req, HttpServletResponse res, String jsonOf) throws IOException {
 		res.addHeader("Access-Control-Allow-Origin", "*");
-        final ByteBuffer finalContent = ByteBuffer.wrap(serialize(jsonOf));
+// FIXME       final ByteBuffer finalContent = ByteBuffer.wrap(serialize(jsonOf));
+		final ByteBuffer finalContent = ByteBuffer.wrap(jsonOf.getBytes());
         final AsyncContext async = req.getAsyncContext();
         final ServletOutputStream out = res.getOutputStream();
         out.setWriteListener(new WriteListener() {
