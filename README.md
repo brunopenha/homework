@@ -20,17 +20,17 @@ individual streams. This combine XML like this to load into this application:
 You can download the last release version <a href='https://github.com/brunopenha/homework/releases/' target='_blank'>here</a> and:
 
 ```
-java -jar homework-0.0.2-SNAPSHOT-jar-with-dependencies.jar
+java -jar homework-0.0.3-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 This should start this application with the port 8080. But if you want to use another port, just use as argument, like this:
 
-_java -jar homework-0.0.2-SNAPSHOT-jar-with-dependencies.jar <Port Number>_ 
+_java -jar homework-0.0.3-SNAPSHOT-jar-with-dependencies.jar <Port Number>_ 
 
 For instance, if you want to use the port 8181:
 
 ```
-java -jar homework-0.0.2-SNAPSHOT-jar-with-dependencies.jar 8181
+java -jar homework-0.0.3-SNAPSHOT-jar-with-dependencies.jar 8181
 ```
 
 Or you can clone this project and run
