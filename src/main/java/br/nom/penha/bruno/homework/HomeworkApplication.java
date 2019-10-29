@@ -96,6 +96,8 @@ public class HomeworkApplication extends HttpServlet {
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Invalid port number --> " + args[0]);
 			}
+		}else {
+			app.port = 8080;
 		}
 		
 		app.services(new Services()).start();
