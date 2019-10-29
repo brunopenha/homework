@@ -1,8 +1,6 @@
 package br.nom.penha.bruno.homework.services;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,7 +52,6 @@ public class ServiceHandler {
 
 	private void nioResponse(HttpServletRequest req, HttpServletResponse res, String jsonOf) throws IOException {
 		res.addHeader("Access-Control-Allow-Origin", "*");
-// FIXME       final ByteBuffer finalContent = ByteBuffer.wrap(serialize(jsonOf));
 		final ByteBuffer finalContent = ByteBuffer.wrap(jsonOf.getBytes());
         final AsyncContext async = req.getAsyncContext();
         final ServletOutputStream out = res.getOutputStream();
@@ -82,12 +79,6 @@ public class ServiceHandler {
 		
 	}
 
-	private byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(out);
-        os.writeObject(obj);
-        return out.toByteArray();
-    }
     
 	public final ServletAction getEndpointIfMatches(final String path){
         List<Service> endpoints = serviceList.stream().filter(end -> urlMatch(path, end.getPath())).limit(1).collect(Collectors.toList());

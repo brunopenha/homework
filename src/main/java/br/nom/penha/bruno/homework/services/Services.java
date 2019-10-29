@@ -11,6 +11,7 @@ import br.nom.penha.bruno.homework.dao.HomeworkDao;
 import br.nom.penha.bruno.homework.dao.HomeworkDaoImpl;
 import br.nom.penha.bruno.homework.entity.DataReturn;
 import br.nom.penha.bruno.homework.entity.Hosts;
+import br.nom.penha.bruno.homework.entity.ReturnDTO;
 import br.nom.penha.bruno.homework.json.JsonWriter;
 import br.nom.penha.bruno.homework.xml.XmlReader;
 import io.reactivex.Observable;
@@ -32,6 +33,19 @@ final public class Services {
 	/**
 	 * Return all XML data stored here in JSON format
 	 */
+	ServletAction read = (HttpServletRequest req, HttpServletResponse res) -> {
+
+		Observable.just(req) 
+		.map(request -> getPathVariables(req).get("id"))
+		.flatMap(id -> dao.read(Long.parseLong(id)))
+		.subscribe(
+				retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno.get())),
+				error -> toJsonResponse(req, res, new ReturnDTO(400,error)));		
+	};
+	
+	/**
+	 * Return XML data stored here in JSON format
+	 */
 	ServletAction readAllData = (HttpServletRequest req, HttpServletResponse res) -> {
 
 		Observable.just(req).flatMap(retorno -> dao.readAll()).subscribe(retorno -> toJsonResponse(req, res, retorno));
@@ -42,9 +56,9 @@ final public class Services {
 	 */
 	ServletAction addData = (HttpServletRequest req, HttpServletResponse res) -> {
 
-		Observable.just(req) // We want to modified the Observable into another, using the map fuction
-				.map(request -> (DataReturn) getDataFromXmlBodyRequest(req, DataReturn.class)) // we use th
-				.flatMap(dto -> dao.create(dto)).subscribe(retorno -> toJsonResponse(req, res, retorno));
+		Observable.just(req) 
+				.map(request -> (DataReturn) getDataFromXmlBodyRequest(req, DataReturn.class)) 
+				.flatMap(dto -> dao.create(dto)).subscribe(retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno)));
 	};
 
 	/**
@@ -52,10 +66,12 @@ final public class Services {
 	 */
 	ServletAction addHosts = (HttpServletRequest req, HttpServletResponse res) -> {
 
-		Observable.just(req) // We want to modified the Observable into another, using the map fuction
+		Observable.just(req) 
 				.map(request -> (Hosts) getDataFromJsonBodyRequest(req, Hosts.class))
 				.flatMap(dto -> dao.createHost(dto))
-				.subscribe(retorno -> toJsonResponse(req, res, retorno));
+				.subscribe(
+						retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno)),
+						error -> toJsonResponse(req, res, new ReturnDTO(400,error)));
 
 	};
 
@@ -66,7 +82,7 @@ final public class Services {
 
 		Observable.just(req)
 			.flatMap(retorno -> dao.readAllHosts())
-			.subscribe(retorno -> toJsonResponse(req, res, retorno));
+			.subscribe(retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno)));
 	};
 	
 	/**
@@ -76,7 +92,7 @@ final public class Services {
 
 		Observable.just(req)
 			.flatMap(retorno -> dao.loadData())
-			.subscribe(retorno -> toJsonResponse(req, res, retorno.get()));
+			.subscribe(retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno.get())));
 	};
 	
 	
@@ -94,7 +110,9 @@ final public class Services {
 			Observable.just(req) // We want to modified the Observable into another, using the map fuction
 			.map(request -> getPathVariables(req).get("host"))
 			.flatMap(id -> dao.readHost(id))
-			.subscribe(retorno -> toJsonResponse(req, res, retorno.get()));			
+			.subscribe(
+						retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno.get())),
+						error -> toJsonResponse(req, res, new ReturnDTO(400,error)));			
 			
 			
 			break;
@@ -103,7 +121,8 @@ final public class Services {
 			Observable.just(req) // We want to modified the Observable into another, using the map fuction
 			.map(request -> getPathVariables(req).get("host"))
 			.map(id -> dao.removeHost(id))
-			.subscribe(retornoDel -> toJsonResponse(req, res, retornoDel));
+			.subscribe(retornoDel -> toJsonResponse(req, res, new ReturnDTO(200,retornoDel)),
+						error -> toJsonResponse(req, res, new ReturnDTO(400,error)));
 			
 			break;
 		}
@@ -122,6 +141,7 @@ final public class Services {
 	 * public constructor which will open this endpoints to receive HTTP requests from outside
 	 */
 	public Services() {
+		setService("/api/v1/read/{id}", read);
 		setService("/api/v1/read", readAllData);
 		setService("/api/v1/add", addData);
 		setService("/api/v1/setup", addHosts);

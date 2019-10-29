@@ -6,7 +6,7 @@
 
 	<groupId>br.nom.penha.bruno</groupId>
 	<artifactId>homework</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>homework</name>
 	<description>Homework for demostration</description>
 
@@ -32,6 +32,7 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.2.11</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-core</artifactId>
