@@ -83,7 +83,15 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	@Override
 	public Observable<Optional<DataReturn>> read(Long timestamp) {
-		return Observable.fromCallable(() -> Optional.ofNullable(dataReturn.get(timestamp)));
+		Optional<DataReturn> dataReturned;
+		
+		if(dataReturn.get(timestamp) != null) {
+			dataReturned = Optional.of(dataReturn.get(timestamp));
+		}else {
+			dataReturned = Optional.empty();
+		}
+		
+		return Observable.fromCallable(() -> dataReturned);
 	}
 
 	@Override
@@ -126,7 +134,15 @@ public class HomeworkDaoImpl implements HomeworkDao {
 
 	@Override
 	public Observable<Optional<Hosts>> readHost(String stringId) {
-		return Observable.fromCallable(() -> Optional.ofNullable(hostList.get(stringId)));
+		Optional<Hosts> hostReturned;
+		
+		if(hostList.get(stringId) != null) {
+			hostReturned = Optional.of(hostList.get(stringId));
+		}else {
+			hostReturned = Optional.empty();
+		}
+		
+		return Observable.fromCallable(() -> hostReturned);
 	}
 
 	@Override

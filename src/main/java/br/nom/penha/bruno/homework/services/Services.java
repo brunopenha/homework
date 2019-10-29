@@ -40,7 +40,7 @@ final public class Services {
 		.flatMap(id -> dao.read(Long.parseLong(id)))
 		.subscribe(
 				retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno.get())),
-				error -> toJsonResponse(req, res, new ReturnDTO(400,error)));		
+				error -> toJsonResponse(req, res, new ReturnDTO(400,"Not found")));		
 	};
 	
 	/**
@@ -71,7 +71,7 @@ final public class Services {
 				.flatMap(dto -> dao.createHost(dto))
 				.subscribe(
 						retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno)),
-						error -> toJsonResponse(req, res, new ReturnDTO(400,error)));
+						error -> toJsonResponse(req, res, new ReturnDTO(400,"Not found")));
 
 	};
 
@@ -112,7 +112,7 @@ final public class Services {
 			.flatMap(id -> dao.readHost(id))
 			.subscribe(
 						retorno -> toJsonResponse(req, res, new ReturnDTO(200,retorno.get())),
-						error -> toJsonResponse(req, res, new ReturnDTO(400,error)));			
+						error -> toJsonResponse(req, res, new ReturnDTO(400,"Not found")));			
 			
 			
 			break;
